@@ -229,6 +229,7 @@ async def main():
             "url": "https://mcp.gosset.ai/sse",
             "headers": {"Authorization": f"Bearer {os.getenv('GOSSET_OAUTH_TOKEN')}"},
         },
+        client_session_timeout_seconds=300.0
     ) as server:
         agent = Agent(
             name="Drug Researcher",

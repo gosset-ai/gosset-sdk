@@ -49,6 +49,7 @@ async def main():
                 "Authorization": f"Bearer {token}",
             },
         },
+        client_session_timeout_seconds=300.0,
         cache_tools_list=True,
     ) as server:
         
@@ -74,7 +75,7 @@ async def main():
         
         # Run example queries
         queries = [
-            "Show me all EGFR inhibitors in Phase 3 clinical trials",
+            "Show me all assets targetting CBL-B",
             # Uncomment to try more queries:
             # "What are the top 5 most advanced drugs for Alzheimer's disease?",
             # "Find all CAR-T therapies approved in the last 2 years",
@@ -84,7 +85,7 @@ async def main():
             print(f"Query: {query}")
             print("-" * 70)
             
-            result = await Runner.run(agent, query)
+            result = await asyncio.wait_for(Runner.run(agent, query), timeout=300.0)
             print(result.final_output)
             print("=" * 70)
             print()
