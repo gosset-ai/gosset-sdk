@@ -5,7 +5,7 @@ Python SDK for accessing Gosset's comprehensive drug database with 100,000+ drug
 ## Features
 
 🚀 **Full programmatic control** over queries and responses  
-⚡ **Unlimited access** to the complete Gosset database  
+⚡ **Access** to the complete Gosset database  
 🔧 **Custom AI agents** using OpenAI Agents SDK  
 🎯 **Advanced filtering** and data processing  
 📊 **Easy integration** with your existing tools  
@@ -96,8 +96,6 @@ pip install requests
 # Run it
 python get-token-standalone.py
 
-# Or with API token
-GOSSET_API_TOKEN=your_token python get-token-standalone.py
 ```
 
 ### Verifying Installation
@@ -140,9 +138,6 @@ Get an OAuth token for API access:
 # Interactive mode (opens browser)
 gosset get-token
 
-# With API token for automatic authentication
-gosset get-token --api-token YOUR_API_TOKEN
-
 # Quiet mode (only output token - useful for scripting)
 gosset get-token --quiet
 
@@ -174,7 +169,6 @@ gosset --help
 ### Environment Variables
 
 - `GOSSET_OAUTH_TOKEN` - Your OAuth access token (required)
-- `GOSSET_API_TOKEN` - Optional API token for automatic OAuth flow
 - `OAUTH_BASE_URL` - Custom API base URL (default: https://api.gosset.ai)
 
 ### Setting the Token
@@ -331,14 +325,12 @@ Get OAuth token programmatically:
 from gosset_sdk import get_oauth_token
 
 token = get_oauth_token(
-    api_token="optional_api_token",  # Optional: GOSSET_API_TOKEN env var
     base_url="https://api.gosset.ai",  # Optional: custom base URL
     quiet=False  # Optional: suppress output
 )
 ```
 
 **Parameters:**
-- `api_token` (str, optional): API token for automatic authentication
 - `base_url` (str, optional): Custom API base URL
 - `quiet` (bool, optional): If True, suppress all output except the token
 

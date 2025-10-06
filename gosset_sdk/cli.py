@@ -11,15 +11,7 @@ from . import __version__
 
 def get_token_command(args):
     """Handle 'get-token' command"""
-    api_token = args.api_token or os.environ.get("GOSSET_API_TOKEN")
-    
-    if not api_token and not args.quiet:
-        print("Note: No GOSSET_API_TOKEN set. You'll need to log in through the browser.")
-        print("Alternatively, set GOSSET_API_TOKEN to authenticate automatically.")
-        print()
-    
     token = get_oauth_token(
-        api_token=api_token,
         base_url=args.base_url,
         quiet=args.quiet
     )
@@ -56,10 +48,6 @@ def main():
     token_parser = subparsers.add_parser(
         "get-token",
         help="Get OAuth token for Gosset API"
-    )
-    token_parser.add_argument(
-        "--api-token",
-        help="GOSSET_API_TOKEN for authentication (optional)"
     )
     token_parser.add_argument(
         "--base-url",

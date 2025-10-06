@@ -46,21 +46,17 @@ class CallbackHandler(BaseHTTPRequestHandler):
         pass  # Suppress logging
 
 
-def get_oauth_token(api_token=None, base_url=None, quiet=False):
+def get_oauth_token(base_url=None, quiet=False):
     """
     Get OAuth token through interactive browser flow
     
     Args:
-        api_token: Optional GOSSET_API_TOKEN to use for authentication
         base_url: Optional custom API base URL
         quiet: If True, suppress informational output
         
     Returns:
         str: OAuth access token if successful, None otherwise
     """
-    if api_token is None:
-        api_token = os.environ.get("GOSSET_API_TOKEN")
-    
     if base_url is None:
         base_url = API_BASE_URL
     
@@ -122,9 +118,6 @@ def get_oauth_token(api_token=None, base_url=None, quiet=False):
         "scope": "read write",
         "state": "test123"
     }
-    
-    if api_token:
-        params["token"] = api_token
     
     auth_url_with_params = f"{auth_url}?" + "&".join([f"{k}={v}" for k, v in params.items()])
     

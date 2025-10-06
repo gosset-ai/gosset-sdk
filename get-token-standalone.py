@@ -5,9 +5,6 @@ Standalone script to get Gosset OAuth token without installing the package.
 Usage:
     python get-token-standalone.py
     
-    # With API token:
-    GOSSET_API_TOKEN=your_token python get-token-standalone.py
-    
     # Quiet mode (only output token):
     python get-token-standalone.py --quiet
 """
@@ -62,11 +59,8 @@ class CallbackHandler(BaseHTTPRequestHandler):
         pass  # Suppress logging
 
 
-def get_oauth_token(api_token=None, base_url=None, quiet=False):
+def get_oauth_token(base_url=None, quiet=False):
     """Get OAuth token through interactive browser flow"""
-    if api_token is None:
-        api_token = os.environ.get("GOSSET_API_TOKEN")
-    
     if base_url is None:
         base_url = API_BASE_URL
     
@@ -120,9 +114,6 @@ def get_oauth_token(api_token=None, base_url=None, quiet=False):
         "scope": "read write",
         "state": "test123"
     }
-    
-    if api_token:
-        params["token"] = api_token
     
     auth_url_with_params = f"{auth_url}?" + "&".join([f"{k}={v}" for k, v in params.items()])
     
@@ -195,10 +186,6 @@ def main():
         description="Get Gosset OAuth token without installing the package"
     )
     parser.add_argument(
-        "--api-token",
-        help="GOSSET_API_TOKEN for authentication (optional)"
-    )
-    parser.add_argument(
         "--base-url",
         help="Custom API base URL (optional)"
     )
@@ -210,15 +197,7 @@ def main():
     
     args = parser.parse_args()
     
-    api_token = args.api_token or os.environ.get("GOSSET_API_TOKEN")
-    
-    if not api_token and not args.quiet:
-        print("Note: No GOSSET_API_TOKEN set. You'll need to log in through the browser.")
-        print("Alternatively, set GOSSET_API_TOKEN to authenticate automatically.")
-        print()
-    
     token = get_oauth_token(
-        api_token=api_token,
         base_url=args.base_url,
         quiet=args.quiet
     )
