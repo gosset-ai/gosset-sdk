@@ -136,7 +136,7 @@ async with MCPServerSse(
     name="Gosset Drug Database",
     params={"url": "https://mcp.gosset.ai/sse", ...},
     tool_filter=create_static_tool_filter(
-        allowed_tool_names=["search_drugs", "get_drug_details"]
+        allowed_tool_names=["find_drugs", "search", "fetch"]
     ),
 ) as server:
     # Your agent only has access to specified tools
