@@ -53,6 +53,18 @@ async def main():
         cache_tools_list=True,
     ) as server:
         
+        # List available tools
+        print("\nListing available tools from Gosset...\n")
+        tools = await server.list_tools()
+        print(f"Found {len(tools)} tools:")
+        print("-" * 70)
+        for tool in tools:
+            print(f"  • {tool.name}")
+            if tool.description:
+                print(f"    {tool.description}")
+        print("=" * 70)
+        print()
+        
         # Create an agent with access to Gosset
         agent = Agent(
             name="Biotech Research Assistant",
@@ -70,7 +82,7 @@ async def main():
             model_settings=ModelSettings(tool_choice="auto"),
         )
 
-        print("\nAgent ready! Querying database...\n")
+        print("Agent ready! Querying database...\n")
         print("=" * 70)
         
         # Run example queries
