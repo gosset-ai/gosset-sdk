@@ -42,7 +42,8 @@ class GossetClient:
                 "set GOSSET_API_KEY environment variable."
             )
         
-        self.base_url = base_url.rstrip('/') if base_url else "https://api.gosset.ai"
+        base_url = base_url or os.environ.get("GOSSET_API_URL", "https://api.gosset.ai")
+        self.base_url = base_url.rstrip('/')
         self.timeout = timeout
         self.session = requests.Session()
         self.session.headers.update({
