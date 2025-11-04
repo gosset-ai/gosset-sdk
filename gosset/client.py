@@ -20,7 +20,7 @@ class GossetClient:
     Args:
         api_key: Your Gosset API key (Bearer token). 
                  If not provided, will check GOSSET_API_KEY environment variable.
-        base_url: API base URL. Defaults to https://api-dev.gosset.ai
+        base_url: API base URL. Defaults to https://api.gosset.ai
         timeout: Request timeout in seconds. Defaults to 30.
     
     Example:
