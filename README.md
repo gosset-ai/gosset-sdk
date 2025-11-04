@@ -318,6 +318,81 @@ See [examples/biotech_agent.py](examples/biotech_agent.py) for more examples.
 
 ## API Reference
 
+### `GossetClient`
+
+Direct API client for programmatic access to Gosset endpoints.
+
+```python
+from gosset_sdk import GossetClient
+
+# Initialize client (uses GOSSET_API_KEY or GOSSET_OAUTH_TOKEN from environment)
+client = GossetClient()
+
+# Or provide API key directly
+client = GossetClient(api_key="your_api_key_here")
+
+# Classify diseases
+result = client.classify_diseases("Breast Cancer")
+print(result['disease_classes'])  # ['GD-01']
+
+# Get aggregate trial statistics (PTRs)
+stats = client.estimate_ptrs(phase=2)
+print(f"Total trials: {stats['total_trials']}")
+print(f"Success rate: {stats['average_met_endpoints_one']:.2%}")
+
+# Filter by disease class
+stats = client.estimate_ptrs(disease_classes='GD-01', phase=2)
+
+# Multiple disease classes
+stats = client.estimate_ptrs(disease_classes=['GD-01', 'GD-02'])
+
+# Use as context manager
+with GossetClient() as client:
+    stats = client.estimate_ptrs(phase=3)
+
+# Clean up
+client.close()
+```
+
+#### `GossetClient.__init__(api_key, base_url, timeout)`
+
+Initialize the client.
+
+**Parameters:**
+- `api_key` (str, optional): API key or OAuth token. Uses `GOSSET_API_KEY` or `GOSSET_OAUTH_TOKEN` env vars if not provided
+- `base_url` (str, optional): API base URL. Defaults to `GOSSET_API_URL` env var or `https://api.gosset.ai`
+- `timeout` (int, optional): Request timeout in seconds (default: 30)
+
+#### `client.classify_diseases(disease_name, disease_desc="")`
+
+Classify a disease to get disease class IDs.
+
+**Parameters:**
+- `disease_name` (str): Name of the disease (e.g., 'Breast Cancer')
+- `disease_desc` (str, optional): Additional description for better classification
+
+**Returns:** Dictionary with `disease_classes` list (e.g., `['GD-01']`)
+
+#### `client.estimate_ptrs(disease_classes=None, phase=None)`
+
+Get aggregate trial statistics (PTRs).
+
+**Parameters:**
+- `disease_classes` (str or list, optional): Disease class ID(s) (e.g., `'GD-01'` or `['GD-01', 'GD-02']`)
+- `phase` (int, optional): Clinical trial phase (1, 2, 3, or 4)
+
+**Returns:** Dictionary with aggregate statistics:
+- `total_trials`: Total number of trials
+- `trials_with_endpoint_data`: Trials with endpoint/outcome data
+- `average_met_endpoints_one`: Average proportion meeting at least one endpoint (0.0-1.0)
+- `average_met_endpoints_all`: Average proportion meeting all endpoints (0.0-1.0)
+- `average_progressed`: Average proportion that progressed to next phase (0.0-1.0)
+- `average_arm_size`: Average number of participants per trial arm
+- `trials_with_comparator`: Trials with a comparator arm
+- `multi_arm_trials`: Trials with multiple treatment arms
+- `trials_with_genomics`: Trials that include genomic data
+- `trials_with_biomarkers`: Trials that include biomarker data
+
 ### `gosset_sdk.get_oauth_token()`
 
 Get OAuth token programmatically:
@@ -340,10 +415,14 @@ token = get_oauth_token(
 ### Python Usage
 
 ```python
-from gosset_sdk import get_oauth_token, __version__
+from gosset_sdk import GossetClient, get_oauth_token, __version__
 
 # Get token programmatically
 token = get_oauth_token(quiet=True)
+
+# Use the client
+client = GossetClient()
+stats = client.estimate_ptrs(phase=2)
 
 # Check version
 print(f"Using Gosset SDK v{__version__}")
@@ -354,26 +433,75 @@ print(f"Using Gosset SDK v{__version__}")
 ## Use Cases
 
 ### Drug Discovery
+
+**Using GossetClient:**
+```python
+client = GossetClient()
+# Classify a disease
+result = client.classify_diseases("Non-small cell lung cancer")
+disease_classes = result['disease_classes']
+
+# Get trial statistics for that disease
+stats = client.estimate_ptrs(disease_classes=disease_classes, phase=3)
+print(f"Phase 3 success rate: {stats['average_met_endpoints_one']:.1%}")
+```
+
+**Using AI Agent:**
 ```python
 "Find all antibody-drug conjugates targeting HER2"
 ```
 
 ### Clinical Trial Intelligence
+
+**Using GossetClient:**
+```python
+client = GossetClient()
+# Get Phase 2 trial statistics
+stats = client.estimate_ptrs(phase=2)
+print(f"Total Phase 2 trials: {stats['total_trials']}")
+print(f"Average progression rate: {stats['average_progressed']:.1%}")
+```
+
+**Using AI Agent:**
 ```python
 "What Phase 2 trials for multiple sclerosis started in 2024?"
 ```
 
 ### Competitive Analysis
+
+**Using GossetClient:**
+```python
+client = GossetClient()
+# Compare success rates across disease classes
+for disease_class in ['GD-01', 'GD-02', 'GD-03']:
+    stats = client.estimate_ptrs(disease_classes=disease_class, phase=2)
+    print(f"{disease_class}: {stats['average_met_endpoints_one']:.1%}")
+```
+
+**Using AI Agent:**
 ```python
 "Analyze the competitive landscape for GLP-1 agonists"
 ```
 
 ### Target Validation
+
+**Using AI Agent:**
 ```python
 "What drugs target KRAS G12C mutation?"
 ```
 
 ### Market Research
+
+**Using GossetClient:**
+```python
+client = GossetClient()
+# Analyze rare disease space
+rare_disease_classes = ['GD-15', 'GD-16']  # Example rare disease classes
+stats = client.estimate_ptrs(disease_classes=rare_disease_classes)
+print(f"Total trials in rare diseases: {stats['total_trials']}")
+```
+
+**Using AI Agent:**
 ```python
 "Identify opportunities in the rare disease space"
 ```

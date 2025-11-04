@@ -1,4 +1,5 @@
 """
+<<<<<<< HEAD
 Gosset API Client
 
 A Python client for interacting with the Gosset Drug Database API.
@@ -320,10 +321,108 @@ class GossetClient:
         self,
         disease_name: str,
         disease_desc: str = ""
+=======
+Gosset API Client for programmatic access to drug database
+"""
+import os
+from typing import Optional, List, Dict, Any, Union
+import requests
+
+
+class GossetClient:
+    """
+    Client for interacting with Gosset API endpoints.
+    
+    Provides convenient methods for:
+    - Disease classification
+    - PTRs (aggregate trial statistics)
+    
+    Example:
+        >>> from gosset_sdk import GossetClient
+        >>> client = GossetClient()
+        >>> result = client.classify_diseases("Breast Cancer")
+        >>> print(result['disease_classes'])
+        ['GD-01']
+    """
+    
+    def __init__(
+        self,
+        api_key: Optional[str] = None,
+        base_url: Optional[str] = None,
+        timeout: int = 30
+    ):
+        """
+        Initialize Gosset API client.
+        
+        Args:
+            api_key: API key or OAuth token. If not provided, will look for
+                    GOSSET_API_KEY or GOSSET_OAUTH_TOKEN environment variables
+            base_url: API base URL. Defaults to GOSSET_API_URL env var or
+                     https://api.gosset.ai
+            timeout: Request timeout in seconds (default: 30)
+        
+        Raises:
+            ValueError: If no API key is found
+        """
+        self.api_key = api_key or os.getenv("GOSSET_API_KEY") or os.getenv("GOSSET_OAUTH_TOKEN")
+        if not self.api_key:
+            raise ValueError(
+                "API key required. Provide via api_key parameter or set "
+                "GOSSET_API_KEY/GOSSET_OAUTH_TOKEN environment variable"
+            )
+        
+        self.base_url = base_url or os.getenv("GOSSET_API_URL", "https://api.gosset.ai")
+        self.base_url = self.base_url.rstrip('/')
+        self.timeout = timeout
+        
+        self._session = requests.Session()
+        self._session.headers.update({
+            'Authorization': f'Bearer {self.api_key}',
+            'Content-Type': 'application/json'
+        })
+    
+    def _make_request(
+        self,
+        method: str,
+        endpoint: str,
+        json_data: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """
+        Make HTTP request to API.
+        
+        Args:
+            method: HTTP method (GET, POST, etc.)
+            endpoint: API endpoint path
+            json_data: JSON request body
+        
+        Returns:
+            Response data as dictionary
+        
+        Raises:
+            requests.HTTPError: If request fails
+        """
+        url = f"{self.base_url}{endpoint}"
+        
+        response = self._session.request(
+            method=method,
+            url=url,
+            json=json_data,
+            timeout=self.timeout
+        )
+        
+        response.raise_for_status()
+        return response.json()
+    
+    def classify_diseases(
+        self,
+        disease_name: str,
+        disease_desc: str = ''
+>>>>>>> b164c9c (Save)
     ) -> Dict[str, Any]:
         """
         Classify a disease to get disease class IDs.
         
+<<<<<<< HEAD
         Args:
             disease_name: Name of the disease
             disease_desc: Optional description of the disease
@@ -430,5 +529,112 @@ class GossetClient:
     
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Context manager exit"""
+=======
+        Uses the /v2/trials/disease-class/ endpoint to map disease names
+        to Gosset Disease (GD) classification IDs.
+        
+        Args:
+            disease_name: Name of the disease (e.g., 'Breast Cancer')
+            disease_desc: Optional description of the disease for better classification
+        
+        Returns:
+            Dictionary containing:
+                - disease_classes: List of disease class IDs (e.g., ['GD-01'])
+        
+        Example:
+            >>> client = GossetClient()
+            >>> result = client.classify_diseases("Breast Cancer")
+            >>> print(result['disease_classes'])
+            ['GD-01']
+        
+        Raises:
+            requests.HTTPError: If API request fails
+        """
+        return self._make_request(
+            method='POST',
+            endpoint='/v2/trials/disease-class/',
+            json_data={
+                'disease_name': disease_name,
+                'disease_desc': disease_desc
+            }
+        )
+    
+    def estimate_ptrs(
+        self,
+        disease_classes: Optional[Union[str, List[str]]] = None,
+        phase: Optional[int] = None
+    ) -> Dict[str, Any]:
+        """
+        Get aggregate trial statistics (PTRs).
+        
+        Query the /v2/trials/ptrs/ endpoint to retrieve aggregate statistics
+        across clinical trials. Can filter by disease classes and/or phase.
+        
+        Args:
+            disease_classes: Single disease class ID or list of IDs (e.g., 'GD-01' or ['GD-01', 'GD-02'])
+            phase: Clinical trial phase (1, 2, 3, or 4)
+        
+        Returns:
+            Dictionary containing aggregate statistics:
+                - total_trials: Total number of trials
+                - trials_with_endpoint_data: Trials with endpoint/outcome data
+                - average_met_endpoints_one: Average proportion meeting at least one endpoint (0.0-1.0)
+                - average_met_endpoints_all: Average proportion meeting all endpoints (0.0-1.0)
+                - average_progressed: Average proportion that progressed to next phase (0.0-1.0)
+                - average_arm_size: Average number of participants per trial arm
+                - trials_with_comparator: Trials with a comparator arm
+                - multi_arm_trials: Trials with multiple treatment arms
+                - trials_with_genomics: Trials that include genomic data
+                - trials_with_biomarkers: Trials that include biomarker data
+        
+        Examples:
+            >>> client = GossetClient()
+            >>> 
+            >>> # Get all Phase 2 trials
+            >>> stats = client.estimate_ptrs(phase=2)
+            >>> print(f"Total trials: {stats['total_trials']}")
+            >>> 
+            >>> # Get trials for a specific disease class
+            >>> stats = client.estimate_ptrs(disease_classes='GD-01')
+            >>> print(f"Success rate: {stats['average_met_endpoints_one']:.2%}")
+            >>> 
+            >>> # Combine filters
+            >>> stats = client.estimate_ptrs(disease_classes='GD-01', phase=2)
+            >>> print(f"Phase 2 trials in GD-01: {stats['total_trials']}")
+            >>> 
+            >>> # Multiple disease classes
+            >>> stats = client.estimate_ptrs(disease_classes=['GD-01', 'GD-02'])
+        
+        Raises:
+            requests.HTTPError: If API request fails
+        """
+        body = {}
+        
+        if disease_classes is not None:
+            # Always use as a list
+            if isinstance(disease_classes, str):
+                disease_classes = [disease_classes]
+            body['disease_classes'] = disease_classes
+        
+        if phase is not None:
+            body['phase'] = phase
+        
+        return self._make_request(
+            method='POST',
+            endpoint='/v2/trials/ptrs/',
+            json_data=body
+        )
+    
+    def close(self):
+        """Close the HTTP session."""
+        self._session.close()
+    
+    def __enter__(self):
+        """Context manager entry."""
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Context manager exit."""
+>>>>>>> b164c9c (Save)
         self.close()
 

@@ -26,6 +26,42 @@ GOSSET_OAUTH_TOKEN=your_oauth_token_here
 
 ## Available Examples
 
+### client_minimal.py
+
+A minimal example showing the essential GossetClient usage:
+- Initialize the client
+- Classify diseases
+- Query aggregate trial statistics (PTRs)
+- Filter by phase and disease classes
+
+**Run it:**
+```bash
+python examples/client_minimal.py
+```
+
+**What it does:**
+- Demonstrates disease classification API
+- Shows how to query PTRs with various filters
+- Quick reference for common operations
+
+### client_demo.py
+
+A comprehensive demonstration of the GossetClient:
+- All GossetClient features with detailed output
+- Error handling examples
+- Context manager usage
+- Multiple query patterns
+
+**Run it:**
+```bash
+python examples/client_demo.py
+```
+
+**What it does:**
+- Full walkthrough of disease classification
+- Detailed PTRs queries with different filter combinations
+- Best practices for using the client
+
 ### biotech_agent.py
 
 A basic biotech research assistant that demonstrates:
