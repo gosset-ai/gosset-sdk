@@ -315,7 +315,7 @@ class GossetClient:
             "return_id": return_id
         }
         
-        return self._request("POST", "/v2/trials/ptrs/predict-direct/", data=payload)
+        return self._request("POST", "/v2/trials/ptrs/predict-args/", data=payload)
     
     def classify_disease(
         self,
