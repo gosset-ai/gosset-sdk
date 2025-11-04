@@ -7,7 +7,7 @@ import sys
 def test_import():
     """Test package import"""
     try:
-        from gosset_sdk import get_oauth_token, __version__
+        from gosset import get_oauth_token, __version__
         print(f"✓ Package import successful (v{__version__})")
         return True
     except ImportError as e:
@@ -37,7 +37,7 @@ def test_cli():
 def test_auth_module():
     """Test auth module is accessible"""
     try:
-        from gosset_sdk.auth import get_oauth_token
+        from gosset.auth import get_oauth_token
         print("✓ Auth module accessible")
         return True
     except ImportError as e:

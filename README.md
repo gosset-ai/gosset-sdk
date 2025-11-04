@@ -19,10 +19,10 @@ Python SDK for accessing Gosset's comprehensive drug database with 100,000+ drug
 
 ```bash
 # Standard installation
-pip install gosset-sdk
+pip install gosset
 
 # With agent support (recommended)
-pip install gosset-sdk[agents]
+pip install gosset[agents]
 ```
 
 ### Step 2: Get Token
@@ -53,24 +53,24 @@ That's it! You're ready to build AI agents with Gosset's drug database.
 
 ```bash
 # Basic installation
-pip install gosset-sdk
+pip install gosset
 
 # With agent support (includes openai-agents)
-pip install gosset-sdk[agents]
+pip install gosset[agents]
 
 # Development installation (includes testing tools)
-pip install gosset-sdk[dev]
+pip install gosset[dev]
 
 # Everything
-pip install gosset-sdk[dev,agents]
+pip install gosset[dev,agents]
 ```
 
 ### From Source
 
 ```bash
 # Clone the repository
-git clone https://github.com/gosset/gosset-sdk.git
-cd gosset-sdk
+git clone https://github.com/gosset/gosset.git
+cd gosset
 
 # Install in development mode
 pip install -e .
@@ -323,7 +323,7 @@ See [examples/biotech_agent.py](examples/biotech_agent.py) for more examples.
 Direct API client for programmatic access to Gosset endpoints.
 
 ```python
-from gosset_sdk import GossetClient
+from gosset import GossetClient
 
 # Initialize client (uses GOSSET_API_KEY or GOSSET_OAUTH_TOKEN from environment)
 client = GossetClient()
@@ -393,12 +393,12 @@ Get aggregate trial statistics (PTRs).
 - `trials_with_genomics`: Trials that include genomic data
 - `trials_with_biomarkers`: Trials that include biomarker data
 
-### `gosset_sdk.get_oauth_token()`
+### `gosset.get_oauth_token()`
 
 Get OAuth token programmatically:
 
 ```python
-from gosset_sdk import get_oauth_token
+from gosset import get_oauth_token
 
 token = get_oauth_token(
     base_url="https://api.gosset.ai",  # Optional: custom base URL
@@ -415,7 +415,7 @@ token = get_oauth_token(
 ### Python Usage
 
 ```python
-from gosset_sdk import GossetClient, get_oauth_token, __version__
+from gosset import GossetClient, get_oauth_token, __version__
 
 # Get token programmatically
 token = get_oauth_token(quiet=True)
@@ -523,12 +523,12 @@ source ~/.bashrc
 
 **Solution 2: Use python -m**
 ```bash
-python -m gosset_sdk.cli get-token
+python -m gosset.cli get-token
 ```
 
 **Solution 3: Check installation**
 ```bash
-pip show gosset-sdk
+pip show gosset
 which gosset
 ```
 
@@ -538,7 +538,7 @@ If you get import errors when running examples:
 
 ```bash
 # Install with agents support
-pip install gosset-sdk[agents]
+pip install gosset[agents]
 
 # Or install dependencies manually
 pip install openai-agents python-dotenv
@@ -582,8 +582,8 @@ pip install --upgrade pip
 pip cache purge
 
 # Reinstall
-pip uninstall gosset-sdk
-pip install gosset-sdk[agents]
+pip uninstall gosset
+pip install gosset[agents]
 ```
 
 ### Browser Doesn't Open During OAuth

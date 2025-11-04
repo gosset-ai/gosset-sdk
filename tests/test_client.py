@@ -3,7 +3,7 @@ Tests for GossetClient
 """
 import os
 import pytest
-from gosset_sdk import GossetClient
+from gosset import GossetClient
 
 
 def test_client_initialization_with_env():

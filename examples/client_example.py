@@ -4,7 +4,7 @@ Example usage of the GossetClient
 This script demonstrates how to use the GossetClient to interact with the Gosset API.
 """
 import os
-from gosset_sdk import GossetClient
+from gosset import GossetClient
 
 
 def main():

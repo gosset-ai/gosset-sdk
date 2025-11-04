@@ -6,7 +6,7 @@ Quick test to verify GossetClient can be imported and initialized
 def test_import():
     """Test that the client can be imported"""
     try:
-        from gosset_sdk import GossetClient, GossetAPIError
+        from gosset import GossetClient, GossetAPIError
         print("✓ Successfully imported GossetClient and GossetAPIError")
         return True
     except ImportError as e:
@@ -16,7 +16,7 @@ def test_import():
 def test_initialization():
     """Test that the client can be initialized"""
     try:
-        from gosset_sdk import GossetClient
+        from gosset import GossetClient
         
         # Test with explicit API key
         client = GossetClient(api_key="test_key_123")
@@ -43,7 +43,7 @@ def test_initialization():
 def test_error_handling():
     """Test that proper errors are raised"""
     try:
-        from gosset_sdk import GossetClient
+        from gosset import GossetClient
         
         # Test missing API key
         try:

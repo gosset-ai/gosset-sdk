@@ -14,7 +14,7 @@ USAGE:
     python examples/client_demo.py
 """
 
-from gosset_sdk import GossetClient
+from gosset import GossetClient
 
 
 def print_section(title):

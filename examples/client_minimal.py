@@ -4,7 +4,7 @@ Minimal example of using GossetClient for PTRs and disease classification.
 Quick reference showing the essential code needed.
 """
 
-from gosset_sdk import GossetClient
+from gosset import GossetClient
 
 # Initialize client (uses GOSSET_API_KEY or GOSSET_OAUTH_TOKEN from environment)
 client = GossetClient()

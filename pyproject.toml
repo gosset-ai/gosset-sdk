@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "gosset-sdk"
+name = "gosset"
 version = "0.1.0"
 description = "Python SDK for Gosset Drug Database - Access 100,000+ drug assets programmatically"
 readme = "README.md"
@@ -51,11 +51,11 @@ Repository = "https://github.com/gosset/gosset-sdk"
 "Bug Tracker" = "https://github.com/gosset/gosset-sdk/issues"
 
 [project.scripts]
-gosset = "gosset_sdk.cli:main"
+gosset = "gosset.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["gosset_sdk*"]
+include = ["gosset*"]
 exclude = ["tests*", "examples*"]
 
 [tool.black]
