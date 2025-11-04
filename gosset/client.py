@@ -241,9 +241,9 @@ class GossetClient:
         
         Returns:
             Dict containing:
-                - ref: Reference object with prediction results
                 - extracted_parameters: Parameters extracted from the query
                 - original_query: Your original query
+                - probability: Success probability (0-1)
         
         Example:
             >>> result = client.predict_trial_success(
@@ -253,8 +253,7 @@ class GossetClient:
             ...     (chemotherapy), monoclonal antibody, and includes biomarker selection 
             ...     (PD-L1 positive)\"\"\"
             ... )
-            >>> print(f"Prediction: {result['ref']['meta']['prediction']}")
-            >>> print(f"Probability: {result['ref']['meta']['probability']:.2%}")
+            >>> print(f"Probability: {result['probability']:.2%}")
         """
         if not query:
             raise ValueError("query is required")
@@ -300,7 +299,7 @@ class GossetClient:
         
         Returns:
             Dict containing:
-                - ref: Reference object with prediction results
+                - probability: Success probability (0-1)
         
         Example:
             >>> result = client.predict_trial_success_direct(
@@ -316,8 +315,7 @@ class GossetClient:
             ...         "allocation": "Randomized"
             ...     }
             ... )
-            >>> print(f"Prediction: {result['ref']['meta']['prediction']}")
-            >>> print(f"Probability: {result['ref']['meta']['probability']:.2%}")
+            >>> print(f"Probability: {result['probability']:.2%}")
         """
         if not trial_params:
             raise ValueError("trial_params is required")
