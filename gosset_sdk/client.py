@@ -56,19 +56,31 @@ class GossetClient:
         method: str, 
         endpoint: str, 
         data: Optional[Dict[str, Any]] = None,
-        params: Optional[Dict[str, Any]] = None
+        params: Optional[Dict[str, Any]] = None,
+        use_form_data: bool = False
     ) -> Dict[str, Any]:
         """Make an API request"""
         url = f"{self.base_url}{endpoint}"
         
         try:
-            response = self.session.request(
-                method=method,
-                url=url,
-                json=data,
-                params=params,
-                timeout=self.timeout
-            )
+            request_kwargs = {
+                "method": method,
+                "url": url,
+                "params": params,
+                "timeout": self.timeout
+            }
+            
+            if use_form_data:
+                request_kwargs["data"] = data
+                # Override Content-Type for form data (Authorization header from session is preserved)
+                request_kwargs["headers"] = {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Authorization": f"Bearer {self.api_key}"
+                }
+            else:
+                request_kwargs["json"] = data
+            
+            response = self.session.request(**request_kwargs)
             
             # Handle errors
             if response.status_code == 401:
@@ -252,7 +264,7 @@ class GossetClient:
             "return_id": return_id
         }
         
-        return self._request("POST", "/v2/trials/ptrs/predict/", data=payload)
+        return self._request("POST", "/v2/trials/ptrs/predict/", data=payload, use_form_data=True)
     
     def predict_trial_success_direct(
         self,
