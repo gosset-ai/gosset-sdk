@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 # For backwards compatibility with older pip versions
 setup(
-    name="gosset-sdk",
+    name="gosset",
     packages=find_packages(),
     python_requires=">=3.8",
 )
