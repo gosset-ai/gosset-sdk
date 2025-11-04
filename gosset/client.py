@@ -227,7 +227,6 @@ class GossetClient:
     def predict_trial_success(
         self,
         query: str,
-        return_id: bool = True
     ) -> Dict[str, Any]:
         """
         Predict clinical trial success probability from natural language description.
@@ -237,7 +236,6 @@ class GossetClient:
         
         Args:
             query: Natural language description of the trial
-            return_id: If True, return only reference. If False, include full data
         
         Returns:
             Dict containing:
@@ -260,7 +258,6 @@ class GossetClient:
         
         payload = {
             "query": query,
-            "return_id": return_id
         }
         
         return self._request("POST", "/v2/trials/ptrs/predict/", data=payload, use_form_data=True)
@@ -268,7 +265,6 @@ class GossetClient:
     def predict_trial_success_direct(
         self,
         trial_params: Dict[str, Any],
-        return_id: bool = True
     ) -> Dict[str, Any]:
         """
         Predict clinical trial success probability using structured parameters.
@@ -295,7 +291,6 @@ class GossetClient:
                 - has_designations (bool): Has FDA designations
                 - masking_type (str): "Double Blind", "Single Blind", "Open Label", "None"
                 - allocation (str): "Randomized", "Non-Randomized"
-            return_id: If True, return only reference. If False, include full data
         
         Returns:
             Dict containing:
@@ -322,7 +317,6 @@ class GossetClient:
         
         payload = {
             "trial_params": trial_params,
-            "return_id": return_id
         }
         
         return self._request("POST", "/v2/trials/ptrs/predict-args/", data=payload)
