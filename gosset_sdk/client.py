@@ -32,7 +32,7 @@ class GossetClient:
     def __init__(
         self, 
         api_key: Optional[str] = None,
-        base_url: str = "https://api-dev.gosset.ai",
+        base_url: Optional[str] = None,
         timeout: int = 30
     ):
         self.api_key = api_key or os.environ.get("GOSSET_API_KEY")
@@ -42,7 +42,7 @@ class GossetClient:
                 "set GOSSET_API_KEY environment variable."
             )
         
-        self.base_url = base_url.rstrip('/')
+        self.base_url = base_url.rstrip('/') if base_url else "https://api.gosset.ai"
         self.timeout = timeout
         self.session = requests.Session()
         self.session.headers.update({
