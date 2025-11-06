@@ -2,7 +2,7 @@
 Gosset SDK - Python SDK for Gosset Drug Database
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 from .auth import get_oauth_token
 from .client import GossetClient, GossetAPIError

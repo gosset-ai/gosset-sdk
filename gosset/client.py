@@ -425,6 +425,84 @@ class GossetClient:
         
         return self._request("POST", "/v2/trials/ptrs/", data=payload)
     
+    def ptrs_benchmark(
+        self,
+        disease_classes: Optional[List[str]] = None,
+        phase: Optional[int] = None,
+        completion_date_min: Optional[str] = None,
+        completion_date_max: Optional[str] = None,
+        average_arm_size_min: Optional[float] = None,
+        average_arm_size_max: Optional[float] = None
+    ) -> Dict[str, Any]:
+        """
+        Get benchmark statistics for clinical trials with comprehensive filtering.
+        
+        This endpoint provides aggregate statistics across trials without returning
+        individual trial data. Useful for benchmarking and comparing trial cohorts
+        across different time periods, disease classes, and trial characteristics.
+        
+        Args:
+            disease_classes: List of disease class IDs to filter by (e.g., ["DOID_162", "DOID_3908"])
+            phase: Phase number to filter by (1, 2, 3, or 4)
+            completion_date_min: Minimum completion date in YYYY-MM-DD format (e.g., "2018-01-01")
+            completion_date_max: Maximum completion date in YYYY-MM-DD format (max capped at 2024-01-01)
+            average_arm_size_min: Minimum average arm size to filter by
+            average_arm_size_max: Maximum average arm size to filter by
+        
+        Returns:
+            Dict containing aggregate statistics:
+                - total_trials: Total number of trials matching filters
+                - trials_with_endpoint_data: Number of trials with endpoint success data
+                - average_met_endpoints_one: Average rate of meeting at least one primary endpoint (0-1)
+                - average_met_endpoints_all: Average rate of meeting all primary endpoints (0-1)
+                - average_progressed: Average rate of progression to next phase (0-1)
+                - average_arm_size: Average arm size across trials
+                - trials_with_comparator: Number of trials with a comparator arm
+                - multi_arm_trials: Number of multi-arm trials
+                - trials_with_genomics: Number of trials with genomic data
+                - trials_with_biomarkers: Number of trials with biomarker data
+        
+        Example:
+            >>> # Compare Phase 3 trials before and after 2020
+            >>> stats_before = client.ptrs_benchmark(
+            ...     phase=3,
+            ...     completion_date_max="2019-12-31"
+            ... )
+            >>> stats_after = client.ptrs_benchmark(
+            ...     phase=3,
+            ...     completion_date_min="2020-01-01"
+            ... )
+            >>> print(f"Success rate before 2020: {stats_before['average_met_endpoints_one']:.2%}")
+            >>> print(f"Success rate after 2020: {stats_after['average_met_endpoints_one']:.2%}")
+            
+            >>> # Benchmark large Phase 3 cancer trials
+            >>> stats = client.ptrs_benchmark(
+            ...     disease_classes=["DOID_162"],  # Cancer
+            ...     phase=3,
+            ...     average_arm_size_min=200,
+            ...     completion_date_min="2015-01-01",
+            ...     completion_date_max="2023-12-31"
+            ... )
+            >>> print(f"Total trials: {stats['total_trials']}")
+            >>> print(f"Average success rate: {stats['average_met_endpoints_all']:.2%}")
+        """
+        payload = {}
+        
+        if disease_classes is not None:
+            payload["disease_classes"] = disease_classes
+        if phase is not None:
+            payload["phase"] = phase
+        if completion_date_min is not None:
+            payload["completion_date_min"] = completion_date_min
+        if completion_date_max is not None:
+            payload["completion_date_max"] = completion_date_max
+        if average_arm_size_min is not None:
+            payload["average_arm_size_min"] = average_arm_size_min
+        if average_arm_size_max is not None:
+            payload["average_arm_size_max"] = average_arm_size_max
+        
+        return self._request("POST", "/v2/trials/ptrs/", data=payload)
+    
     def close(self):
         """Close the HTTP session"""
         self.session.close()
